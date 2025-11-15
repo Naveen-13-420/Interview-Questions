@@ -1,0 +1,18 @@
+1. What is configuration management?
+2. Why Ansible over the other configuration management tools.
+3. Can you explain any Ansible Playbook that you wrote and found to be effective ?
+4. How Ansible helped your organization?
+5. Scenario: Let's assume you are not aware of the Ansible Servers that would be created in the future but still want to manage them. How can you achieve that?
+6. What is Ansible Tower and have you used it ? If yes, why?
+7. How do you manage the RBAC of users for Ansible Tower?
+8. What is Ansible Galaxy command and why is it used for?
+9. Can you explain me structure of Ansible Playbook using Roles ?
+10. What is handlers in Ansible and why are they used?
+11. I would like to run a specific set of takks only on windows vms and not Linux vms is it possible ?
+12. Does Ansible support parallel execution of tasks ?
+13. What is the protocol that Ansible use to connect to windows vms ?
+14. Can you explain me the variable precedence in Ansible ?
+15. How do you handle secrets in Ansible ?
+16. Can Ansible be used for laC? Infrastructure as Code?
+17. Write an Ansible Playbook to install and start httpd service on an existing ec2 instance.
+18. Finally, What do you think that Ansible can improve ?
