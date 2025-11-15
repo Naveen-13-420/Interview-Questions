@@ -1,0 +1,37 @@
+Kubrenetes Archetecture components and working
+Stateless & statefull sets
+what is the differenece between load balancer and Ingress
+what is drain & coredon
+How can you deploy pod on particular node
+difference between replica set & deployment
+How to check pod live logs
+commands to check nodes 
+difference between HPA & VPA
+pod distribution budget
+what are health probes use full for Kubernetes
+Affinity & Anti affinity rules
+Deamon set
+How do you check live logs on running application in K8S
+how do you troubleshoot situation when frontend communicate with backend 
+In k8s worker nodes some pods are running kubectl got down, pods are going to be run or not
+Ingress controler live logs
+when the pod is contuesly restarting, what will be the reason and troubl shooting steps to debug
+Image pull backoff error in k8s
+In k8s cluster some pods are consuming more cpu and memory resources, how you can solve this kind of issue
+In k8s cluster how you can create multiple namespaces and how can you deploy pods in multiple namespaces
+In AKS how can you access azure services into aks, step by step procedure
+In AKS what is service account and use cases of service account
+AKS cluster update
+Manifest files
+What is helm charts and how it is used for k8s
+what are the deployments strategies in k8s and explain each of them
+What the services in k8s and explain each of them
+How you can rollback deployments
+While upgrading application version to V1 to v2 then new application version was not working properly, how you can rollback to previous version
+How to check pod CPU memory in K8S
+k8s daily used commands in day to day life
+
+
+
+
+
