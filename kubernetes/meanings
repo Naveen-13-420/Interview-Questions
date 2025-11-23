@@ -51,3 +51,23 @@ Node pressure (DiskPressure, MemoryPressure)
 ✔ InsightsMetrics
 
 Node/pod CPU & memory
+
+
+You MUST mention these KQL queries in interview:
+🔹 1. Find pod restarts
+KubePodInventory
+| where ContainerStatusReason == "CrashLoopBackOff"
+
+🔹 2. Find pod failures
+KubePodInventory
+| where PodStatus != "Running"
+
+🔹 3. Application logs
+ContainerLog
+| where PodName contains "api"
+| sort by TimeGenerated desc
+
+🔹 4. Node health
+KubeNodeInventory
+| summarize arg_max(TimeGenerated, *) by Computer
+
