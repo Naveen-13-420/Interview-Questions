@@ -1,0 +1,332 @@
+5️⃣ DNS resolution failure in AKS
+
+6️⃣ Ingress 502 / 503 / 504 errors
+
+Each will have:
+
+What the issue looks like
+
+Common root causes
+
+Step-by-step debugging flow (with commands)
+
+Fixes
+
+How to narrate it in an interview as a real scenario
+
+5️⃣ DNS Resolution Failure in AKS – Full Detailed Version
+🔹 How the problem looks (symptoms)
+
+App logs show errors like:
+
+getaddrinfo ENOTFOUND <service>
+
+DNS resolution failed
+
+no such host
+
+Pod cannot call:
+
+Another service in the cluster (http://orderservice)
+
+External URLs (e.g. https://api.google.com)
+
+Private endpoints / internal hostnames
+
+🔹 Main root cause categories
+
+CoreDNS issues
+
+CoreDNS pods are CrashLoopBackOff or Pending
+
+CoreDNS can’t talk to upstream DNS (e.g. 168.63.129.16 in Azure)
+
+Service / DNS name issues
+
+Wrong service name or namespace
+
+Using pod IP instead of service name
+
+Mis-typed FQDN like svc.cluster.local missing
+
+Network / CNI / DNS policy issues
+
+Azure CNI / Kubenet issue
+
+NetworkPolicy blocking DNS traffic
+
+Custom DNS server misconfigured in VNet
+
+Private DNS zone not linked correctly
+
+Node / OS-level DNS
+
+Node can’t resolve DNS
+
+Host file or resolv.conf misconfiguration (on custom setups)
+
+🔹 Step-by-step debug flow (what you say in interview)
+
+When I see DNS issues in AKS, I follow a structured approach:
+
+✅ Step 1: Check CoreDNS pods
+kubectl get pods -n kube-system -l k8s-app=kube-dns
+kubectl describe pod -n kube-system <coredns-pod-name>
+kubectl logs -n kube-system <coredns-pod-name>
+
+
+Look for:
+
+CrashLoopBackOff
+
+Liveness/readiness probe failures
+
+Upstream timeout errors
+
+If CoreDNS isn’t healthy → fix that first.
+
+✅ Step 2: Test DNS from inside a working pod
+
+Create a temporary debug pod:
+
+kubectl run dns-test --image=busybox:1.35 --restart=Never -it -- nslookup kubernetes.default
+
+
+Or:
+
+kubectl exec -it <existing-pod> -- nslookup <service-name>
+kubectl exec -it <existing-pod> -- nslookup google.com
+
+
+If nslookup for kubernetes.default fails → cluster DNS issue (CoreDNS or node DNS).
+
+If internal service fails but kubernetes.default works → service or namespace issue.
+
+If external DNS fails but internal works → node outbound/DNS forwarding issue.
+
+✅ Step 3: Check the Service itself
+kubectl get svc -n <namespace>
+kubectl describe svc <service-name> -n <namespace>
+
+
+Confirm service name, namespace, and ports
+
+Confirm selector labels match pod labels
+
+✅ Step 4: Check Node DNS configuration (Azure CNI / VNet DNS)
+
+Check the VNet’s DNS server configuration (Custom vs Azure-provided)
+
+If using custom DNS, ensure:
+
+That DNS server can resolve internal & external names
+
+Node has connectivity to that DNS server
+
+In Azure, default DNS is 168.63.129.16 (Azure DNS). Breaking this breaks CoreDNS.
+
+✅ Step 5: If Private Endpoints are involved
+
+Check if Private DNS Zone is linked to the AKS VNet
+
+Check A records created for the Private Endpoint
+
+Try nslookup <privatename>.database.windows.net
+
+🔹 Common fixes
+
+Restart faulty CoreDNS pods or fix their resource limits
+
+Fix Service name / namespace usage in app configs
+
+Correct VNet DNS settings (if custom DNS is broken, revert to Azure DNS or fix forwarders)
+
+Link Private DNS Zone correctly to the AKS VNet
+
+Ensure NetworkPolicies allow traffic to kube-dns (UDP/TCP 53)
+
+🗣️ How to narrate as a scenario in interview
+
+We had an issue where microservices in AKS suddenly couldn’t resolve internal service names.
+I first checked CoreDNS pods in the kube-system namespace and noticed they were restarting due to upstream DNS timeouts.
+
+Using a debug BusyBox pod, I tried nslookup kubernetes.default and it failed, which confirmed a cluster-level DNS issue.
+
+Then I checked the VNet DNS settings and found that a custom DNS server was configured, which was not reachable from AKS nodes.
+After fixing the DNS server connectivity (and eventually switching back to Azure DNS), CoreDNS started resolving names normally and the application recovered.
+
+This shows structured thinking.
+
+6️⃣ Ingress 502 / 503 / 504 Errors – Full Detailed Version
+
+We’ll cover this for NGINX Ingress (and mention AGIC where relevant).
+
+🔹 What these errors usually mean
+
+502 Bad Gateway → Ingress can’t talk properly to the backend
+
+503 Service Unavailable → No healthy backend pods available
+
+504 Gateway Timeout → Backend taking too long to respond
+
+🔹 Main root cause categories
+
+Backend app / pod issues
+
+Pods not ready (readiness probe failing)
+
+Pods crashed or in CrashLoopBackOff
+
+Wrong container port exposed
+
+Service misconfiguration
+
+Wrong targetPort in Service
+
+Wrong selector labels → no endpoints
+
+Service type misused
+
+Ingress config issues
+
+Wrong serviceName/servicePort in Ingress
+
+Path rewrite issues
+
+Wrong host/path
+
+Network / timeout issues
+
+Backend processing very slow
+
+Default timeouts in NGINX/AGIC too low
+
+WAF blocking requests (AGIC)
+
+🔹 Step-by-step debug flow
+
+When I see 502/503/504 via ingress, I usually debug in this order:
+
+✅ Step 1: Check the Ingress resource
+kubectl get ingress -n <namespace>
+kubectl describe ingress <ingress-name> -n <namespace>
+
+
+Verify:
+
+Host
+
+Path rules
+
+Backend serviceName and servicePort are correct
+
+Check for events at bottom.
+
+✅ Step 2: Check Service and its endpoints
+kubectl get svc -n <namespace>
+kubectl describe svc <service-name> -n <namespace>
+kubectl get endpoints <service-name> -n <namespace>
+
+
+Endpoints must list pod IPs
+
+If endpoints are empty → Service is not mapping to any pods
+
+Labels mismatch
+
+Pods not ready
+
+✅ Step 3: Check Pod status and probes
+kubectl get pods -n <namespace> -o wide
+kubectl describe pod <pod-name> -n <namespace>
+kubectl logs <pod-name> -n <namespace>
+
+
+Look for:
+
+CrashLoopBackOff
+
+Readiness probe failures
+
+Liveness probe restarts
+
+App exceptions
+
+If readiness probe fails → ingress 503 is expected.
+
+✅ Step 4: Check NGINX ingress controller logs
+kubectl get pods -n ingress-nginx
+kubectl logs -n ingress-nginx <nginx-controller-pod>
+
+
+Look for:
+
+Upstream timed out
+
+No live upstreams
+
+502/503 logs with backend info
+
+✅ Step 5: Test service directly (bypass Ingress)
+
+Port-forward the service:
+
+kubectl port-forward svc/<service-name> 8080:80 -n <namespace>
+curl http://localhost:8080/health
+
+
+If this fails → app issue or service/port issue
+
+If this works, but ingress fails → ingress configuration issue
+
+🔹 Special note for AGIC (Application Gateway Ingress Controller)
+
+If using AGIC:
+
+Check Application Gateway → Backend Health in Azure Portal
+
+502/503 may be because:
+
+Health probe path wrong
+
+Backend port mismatch
+
+NSG or UDR blocking traffic
+
+SSL mismatch or certificate issues
+
+WAF blocking requests (Visible in WAF logs)
+
+🔹 Typical fixes
+
+Fix servicePort/targetPort so they match the container port
+
+Fix labels so Service selects correct pods
+
+Update readiness/liveness probes to correct paths
+
+Increase timeout in ingress annotations (for slow APIs), e.g.:
+
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+
+
+For AGIC, fix health probe path/port and check NSGs/WAF logs
+
+🗣️ Example: How to narrate an Ingress 502/503 issue in interview
+
+We had a scenario where users were frequently getting 502/503 errors through NGINX ingress.
+I first checked the ingress definition and saw that it was pointing to the correct service.
+
+Then I checked the service’s endpoints and found that the endpoints list was empty, meaning no pods were backing the service.
+
+On inspecting the pods, I saw that readiness probes were failing due to a wrong healthcheck path.
+Because of this, the pods were never marked as ready, so ingress had no healthy backends and returned 503.
+
+After correcting the readiness probe path and redeploying, the pods became Ready, endpoints populated correctly, and ingress started serving traffic successfully without 503s.
+
+You can also mention AGIC-based one:
+
+In another case with AGIC, 502 errors were due to a mismatched health probe path on Application Gateway. Adjusting the probe to match the app’s /health endpoint fixed the issue.
