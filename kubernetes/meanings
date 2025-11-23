@@ -85,3 +85,12 @@ So, the difference is that a LoadBalancer directly exposes one service per IP, w
 intelligent routing. In production microservices environments, we prefer Ingress because it saves cost, simplifies routing, and provides 
 better control over HTTP traffic.
 
+
+Difference Between kubeadm and kubectl — Interview Answer (Paragraph Format)
+
+kubectl is the command-line tool used to interact with a Kubernetes cluster. It is used for day-to-day operations like creating pods, deployments, 
+services, retrieving logs, describing resources, scaling workloads, and managing applications running inside the cluster.
+
+kubeadm, on the other hand, is a cluster bootstrapping tool used to create, configure, and initialize a 
+Kubernetes cluster. It helps set up the control plane and worker nodes (kubeadm init, kubeadm join) but is not used for managing workloads.
+
