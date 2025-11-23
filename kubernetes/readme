@@ -80,3 +80,20 @@ I choose AGIC when we need enterprise security, WAF protection, compliance, or a
 | Performance       | Very fast                                 | Enterprise-grade, scalable              |
 | Path/Host Routing | Yes                                       | Yes                                     |
 | Best For          | Microservices, dev/test, simple prod apps | Secure enterprise workloads, compliance |
+
+
+Private Endpoints in AKS (Important Point)
+
+Private Endpoints are used when the application inside AKS needs to connect securely to Azure PaaS services without going over public internet.
+
+Examples:
+
+Azure SQL
+
+Storage Account
+
+Key Vault
+
+Cosmos DB
+
+With Azure CNI, pods get VNet IPs, so they can directly communicate with these private endpoints using purely internal traffic.
