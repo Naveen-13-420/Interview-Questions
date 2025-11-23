@@ -41,3 +41,42 @@ Yes, Azure CNI consumes more IPs because each pod gets a VNet IP.
 To avoid subnet exhaustion, Azure now provides Azure CNI Overlay, where pods get overlay IPs while nodes use VNet IPs.
 
 This gives the benefits of CNI without large IP requirements.
+
+
+2. What ingress controllers have you used in AKS?
+
+Explain NGINX vs AGIC and when to use which.**
+
+⭐ Interview Answer (Best Version):
+
+In AKS, I have worked with two main ingress controllers:
+NGINX Ingress Controller and AGIC (Application Gateway Ingress Controller).
+
+NGINX Ingress Controller runs inside the AKS cluster as a deployment.
+It uses an internal Azure Load Balancer or public load balancer to receive traffic.
+It’s lightweight, easy to configure, and suitable for most microservices running on HTTP/HTTPS.
+
+AGIC (Application Gateway Ingress Controller) integrates AKS with Azure Application Gateway.
+Application Gateway becomes the data plane and provides enterprise-grade features like:
+
+WAF (Web Application Firewall)
+
+SSL/TLS termination
+
+URL routing
+
+End-to-end TLS
+
+DDoS protection
+
+I choose NGINX for typical microservices where quick deployments and flexibility are required.
+I choose AGIC when we need enterprise security, WAF protection, compliance, or advanced Layer 7 features.
+
+| Feature           | NGINX Ingress Controller                  | AGIC (App Gateway Ingress Controller)   |
+| ----------------- | ----------------------------------------- | --------------------------------------- |
+| Runs Where?       | Inside AKS                                | Azure Application Gateway               |
+| WAF Support       | No (unless 3rd party)                     | Yes, built-in WAF                       |
+| TLS               | Terminated at NGINX                       | Terminated at App Gateway               |
+| Performance       | Very fast                                 | Enterprise-grade, scalable              |
+| Path/Host Routing | Yes                                       | Yes                                     |
+| Best For          | Microservices, dev/test, simple prod apps | Secure enterprise workloads, compliance |
