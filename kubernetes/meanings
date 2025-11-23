@@ -23,3 +23,31 @@ Ingress gives a single entry point with routing, TLS, and WAF support, while Loa
 3️⃣ Why are private endpoints important in AKS?
 
 They allow AKS pods to communicate privately with Azure services without public exposure, improving security and compliance.
+
+⭐ What exactly does AKS send to Log Analytics?
+
+Tables you must mention in the interview:
+
+✔ ContainerLog
+
+App logs from inside pods
+
+Best for debugging errors/exceptions
+
+✔ KubePodInventory
+
+Pod status
+
+Pod restarts
+
+Pod phase (Running/Pending/CrashLoop)
+
+✔ KubeNodeInventory
+
+Node info
+
+Node pressure (DiskPressure, MemoryPressure)
+
+✔ InsightsMetrics
+
+Node/pod CPU & memory
