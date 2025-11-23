@@ -31,6 +31,43 @@ While upgrading application version to V1 to v2 then new application version was
 How to check pod CPU memory in K8S
 k8s daily used commands in day to day life
 
+Linkedin
+ Have you worked with Kubernetes? Explain your use case.
+ What are the benefits of containers over VMs?
+How does Kubernetes help in DevOps workflows?
+How do you handle rollback strategies in production?
+ Difference between Deployment and StatefulSet?
+ • What is a DaemonSet used for?
+ • How does a Service in Kubernetes work?
+ • What is a ConfigMap vs Secret?
+ • What are taints and tolerations?
+ • How do liveness and readiness probes work?
+ • How to troubleshoot a pod stuck in CrashLoopBackOff?
+, docker deployment? Write the dockerfile?
+7, structure of dockerfile?
+8, how to deploy k8s in AWS?
+9, components of K8s?
+10, helm chart?
+11, commands to deploy on k8s, advantage?
+12, challenges faced?
+13, troubleshoot methods?
+20, what is email signing and helm chart signing?
+21, which tool for signing the helm chart?
+13, in kubernetes, what are the errors you are getting, why they come and how you resolve?
+14, explain the crash loop back off,
+15, image pull error?
+16, command to go inside a pod?
+17, how can you create the kubernetes class?
+18, what are the steps to create the cluster?
+19, what is the master node and other node?
+20, code to create a cluster using terraform?
+10, basic structure, folder structure of helm?
+11, what command are you using deployment in helm
+ A StatefulSet pod is failing only on a specific node — walk through how you would isolate whether it’s a node issue, storage issue, or scheduling conflict.
+✅ How do you safely rotate TLS certificates used by ingress controllers without service disruption?
+✅ What’s your strategy to enforce namespace-level resource isolation in a multi-team Kubernetes cluster?
+✅ How would you validate the impact of a new network policy before applying it cluster-wide?
+
 
 
 
