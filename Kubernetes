@@ -8,6 +8,7 @@ Difference between kubeadm and kubectl
 How to check pod live logs
 commands to check nodes 
 difference between HPA & VPA
+How do you route network in aks cluster
 pod distribution budget
 what are health probes use full for Kubernetes
 Affinity & Anti affinity rules
