@@ -1,0 +1,13 @@
+Q1: What is cordon and drain?
+
+Cordon marks a node unschedulable (no new pods).
+Drain evicts pods safely and reschedules them on other nodes.
+
+❓ Q2: What is surge upgrade?
+
+Surge upgrade temporarily adds extra nodes so that when old nodes are drained and upgraded, there is no capacity shortage.
+
+❓ Q3: Can upgrades cause downtime?
+
+If probes, replicas, and PDBs are not configured properly, yes.
+In a well-configured AKS setup, rolling upgrades + probes = zero or minimal downtime.
