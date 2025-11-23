@@ -1,1 +1,43 @@
-g
+🔵 1. Difference between Azure CNI and Kubenet? Which one do you use and why?
+
+This version is easy to understand, professional, and exactly what interviewers expect from an Azure DevOps Engineer.
+
+⭐ Interview Answer (Best Version):
+
+In AKS, we have two networking models: Kubenet and Azure CNI, and they differ mainly in how pod IPs are assigned and how the cluster integrates with the VNet.
+
+Kubenet is the basic/legacy option. Nodes get IPs from the Azure VNet, but pods get IPs from an internal Kubernetes network, not from the VNet.
+Because pods don't have VNet IPs, any communication from pods to VNet resources (SQL, Storage, APIs, on-prem) goes through SNAT, which creates routing limitations.
+Kubenet uses fewer IPs and is good for small clusters but is not suitable for enterprise-grade networking.
+
+Azure CNI, on the other hand, assigns real VNet IPs directly to pods.
+This means pods become first-class members of the VNet and can directly communicate with Private Endpoints, on-prem networks, firewalled resources, or internal services without NAT.
+It gives better performance, easier troubleshooting, full network visibility, NSG/UDR support, and enterprise security.
+
+I prefer Azure CNI in production because most enterprise workloads need to access Azure PaaS services like SQL, Storage, Key Vault over Private Endpoints, and require secure VNet-level routing.
+With CNI, pod traffic flows naturally in the VNet, and we don’t face SNAT or routing issues like in Kubenet.
+
+⭐ Short Summary to Speak at the End
+
+So in simple terms:
+
+Kubenet → Overlay network, limited routing, uses fewer IPs
+
+Azure CNI → Full VNet integration, pod gets VNet IP, best for enterprise workloads
+
+That’s why I use Azure CNI for production AKS clusters.
+
+⭐ Real Example (You Can Say This in Interview)
+
+In one of my projects, we faced connectivity issues because pods using Kubenet couldn't properly communicate with SQL Private Endpoint.
+After moving to Azure CNI, pods received VNet IPs, and Private Endpoint traffic started working smoothly.
+This improved both network reliability and security.
+
+⭐ If interviewer asks deeper: “Azure CNI uses more IPs—how do you manage it?”
+
+You answer:
+
+Yes, Azure CNI consumes more IPs because each pod gets a VNet IP.
+To avoid subnet exhaustion, Azure now provides Azure CNI Overlay, where pods get overlay IPs while nodes use VNet IPs.
+
+This gives the benefits of CNI without large IP requirements.
