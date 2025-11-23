@@ -225,3 +225,17 @@ spec:
 Why this matters?
 
 HPA will NOT work unless you define CPU requests/limits.
+
+Q) how do you troubleshoot situation when frontend communicate with backend?
+In that situation, I treat it as an end-to-end path problem and debug it layer by layer from the frontend down to the backend. 
+First, I check what the frontend is actually seeing in the browser DevTools (Network tab): is it a 4xx (CORS/auth/URL issue), 
+5xx (backend error), timeout, or DNS error? I confirm the exact URL, port, and protocol the frontend is calling (HTTP vs HTTPS, 
+path like /api/orders, correct domain). Next, I test the backend directly: use curl or Postman against the same endpoint (ingress/load 
+balancer URL) to see if the issue is only from browser or from everywhere. If the backend is running in Kubernetes, I then check the 
+Ingress and Service: kubectl describe ingress to confirm it routes to the right service/port, kubectl get svc and kubectl get endpoints 
+to make sure there are healthy pods behind the service, and kubectl get pods / kubectl logs to see if backend pods are crashing, not ready, 
+or throwing errors. I also look for common issues like wrong service targetPort, readiness probe failing (so ingress has no ready backends), 
+CORS misconfiguration (browser blocking), or auth failures (401/403). If network policies or firewalls are in place, I verify they allow traffic 
+from the frontend (namespace/IP) to the backend service. In short, I start at the browser (error type), then check ingress/load balancer, then 
+service/endpoints, then backend pod logs and configuration, and that step-by-step approach quickly shows whether it’s a frontend config issue, 
+routing issue, or a real backend problem.
