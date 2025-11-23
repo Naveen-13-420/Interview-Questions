@@ -4,6 +4,7 @@ what is the differenece between load balancer and Ingress
 what is drain & coredon
 How can you deploy pod on particular node
 difference between replica set & deployment
+Difference between kubeadm and kubectl
 How to check pod live logs
 commands to check nodes 
 difference between HPA & VPA
