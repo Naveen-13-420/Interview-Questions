@@ -71,3 +71,17 @@ ContainerLog
 KubeNodeInventory
 | summarize arg_max(TimeGenerated, *) by Computer
 
+Load Balancer vs Ingress — Interview Answer (Paragraph Form)
+
+In AKS, a LoadBalancer exposes a single Kubernetes service externally by creating an Azure Load Balancer with its own public IP. 
+It works at Layer 4 (TCP/UDP) and simply forwards traffic to one backend service. The limitation is that if you have multiple services, 
+you would need multiple LoadBalancers and multiple public IPs, which increases cost and management overhead.
+
+An Ingress, on the other hand, is a Layer 7 (HTTP/HTTPS) smart router that allows you to expose multiple services using a single public IP. 
+It relies on an Ingress Controller such as NGINX or AGIC, and routes traffic based on hostnames or URL paths. With Ingress you can do advanced 
+features like TLS termination, path-based routing, host-based routing, rewrites, and WAF integration.
+
+So, the difference is that a LoadBalancer directly exposes one service per IP, while an Ingress exposes many services behind one IP with 
+intelligent routing. In production microservices environments, we prefer Ingress because it saves cost, simplifies routing, and provides 
+better control over HTTP traffic.
+
