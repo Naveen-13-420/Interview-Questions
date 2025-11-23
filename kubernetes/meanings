@@ -11,3 +11,15 @@ Surge upgrade temporarily adds extra nodes so that when old nodes are drained an
 
 If probes, replicas, and PDBs are not configured properly, yes.
 In a well-configured AKS setup, rolling upgrades + probes = zero or minimal downtime.
+
+1️⃣ Why do we not use NodePort in production?
+
+It’s not secure, difficult to manage, and exposes the node directly.
+
+2️⃣ Why do we prefer Ingress over LoadBalancer?
+
+Ingress gives a single entry point with routing, TLS, and WAF support, while LoadBalancer exposes only one service.
+
+3️⃣ Why are private endpoints important in AKS?
+
+They allow AKS pods to communicate privately with Azure services without public exposure, improving security and compliance.
