@@ -109,3 +109,119 @@ Ingress gives a single entry point with routing, TLS, and WAF support, while Loa
 3️⃣ Why are private endpoints important in AKS?
 
 They allow AKS pods to communicate privately with Azure services without public exposure, improving security and compliance.
+
+
+1. HPA Manifest (Horizontal Pod Autoscaler)
+
+This example scales your deployment from 2 to 10 pods based on CPU usage (70%).
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp-deployment
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+
+⭐ Requirements for HPA to work:
+
+Metrics Server must be installed
+
+Deployment must define resources.requests for CPU
+
+Target must use apps/v1 → Deployment/StatefulSet/ReplicaSet
+
+⭐ 2. Node Autoscaling (AKS Cluster Autoscaler)
+
+Important:
+Cluster Autoscaler is not configured through Kubernetes YAML.
+It is configured at the AKS nodepool level using Azure CLI or Portal.
+
+Here is the node pool autoscaling manifest in ARM/Bicep style, but I will also give Azure CLI commands, because that's what is used in real projects.
+
+⭐ AKS Node Pool Autoscaling – Azure CLI (Real Method)
+✔ Enable autoscaling on a node pool
+az aks nodepool update \
+  --resource-group myRG \
+  --cluster-name myAKS \
+  --name nodepool1 \
+  --enable-cluster-autoscaler \
+  --min-count 2 \
+  --max-count 5
+
+✔ Disable cluster autoscaler
+az aks nodepool update \
+  --resource-group myRG \
+  --cluster-name myAKS \
+  --name nodepool1 \
+  --disable-cluster-autoscaler
+
+✔ Create a node pool with autoscaling enabled
+az aks nodepool add \
+  --resource-group myRG \
+  --cluster-name myAKS \
+  --name appnp \
+  --node-count 2 \
+  --enable-cluster-autoscaler \
+  --min-count 2 \
+  --max-count 6
+
+⭐ Bicep/ARM Manifest for Node Autoscaling (Optional)
+
+You can show this if interviewer asks for IaC configuration.
+
+properties:
+  orchestratorVersion: "1.29.0"
+  mode: "User"
+  enableAutoScaling: true
+  minCount: 2
+  maxCount: 6
+  vmSize: "Standard_D4s_v3"
+
+
+This is how node autoscaling is represented in IaC.
+
+⭐ Bonus — Combined Example Deployment + HPA (Very Useful for Interview)
+
+Here is a minimal deployment that works perfectly with the HPA above.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: myacr.azurecr.io/myapp:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "200m"
+          limits:
+            cpu: "500m"
+
+Why this matters?
+
+HPA will NOT work unless you define CPU requests/limits.
