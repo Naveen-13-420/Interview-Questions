@@ -1,0 +1,4 @@
+Q)vWhat is “listening” in networking? Explain with a real-world scenario.
+In networking, “listening” means that a server, application, or process is waiting for incoming network connections on a specific IP address + 
+port number.When a service is “listening,” it means it has opened a port and is ready to accept requests from clients.Listening means a service has opened a port 
+and is waiting for incoming connections. For example, a web server listening on port 80 will accept HTTP requests from clients.
