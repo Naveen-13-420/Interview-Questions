@@ -1,0 +1,37 @@
+1) What is Terraform, and how is it different from other Infrastructure as Code (IaC) tools like CloudFormation or Ansible?
+
+2) Explain the concept of Terraform state. Where should it be stored securely?
+
+3) What is the difference between terraform plan and terraform apply?
+
+4) How do you manage secrets in Terraform?
+
+5) What are Terraform providers? Can you create a custom one?
+
+6) What is the role of terraform init?
+
+7) How do count, for_each, and dynamic blocks work in Terraform?
+
+8) What is the difference between local-exec and remote-exec provisioners?9) How do you perform Terraform state locking in a team environment?
+
+10) What is terraform import used for? Any limitations?
+
+11) How do you manage multiple environments (dev/stage/prod) in Terraform?
+
+12) What are Terraform workspaces, and when should you use them?
+
+13) Explain the difference between depends_on and implicit dependency.
+
+14) What are the best practices for writing reusable Terraform modules?
+
+15) Can two Terraform modules reference the same remote backend?
+
+16) How do you handle Terraform drifts?
+
+17) How do you integrate Terraform into a CI/CD pipeline?
+
+18) What’s the difference between terraform taint and terraform destroy?
+
+19) How to upgrade Terraform to a newer version safely in a production pipeline?
+
+20) Describe a real-world issue you faced with Terraform and how you resolved it.
