@@ -1,1 +1,31 @@
-Az
+1️⃣ What is Azure Firewall, and how does it prevent external users from accessing the network?
+ 2️⃣ What is the difference between a VNet and a VPC?
+ 3️⃣ How does an NSG differ from Azure Firewall?
+ 4️⃣ What is listening in networking? Explain with a real-world scenario.
+ 5️⃣ How would you troubleshoot when two VNets in different regions cannot communicate?
+ 6️⃣ How do you troubleshoot a 502 error on a VM behind an Application Gateway?
+ 7️⃣ How do priority settings in Application Gateway rules impact traffic flow?
+ 8️⃣ Describe a challenging issue you faced in your job—how you handled it and what impact it created.
+ 9️⃣ Explain a migration project you’ve worked on.
+ 🔟 What does your current project architecture look like? Which cloud services are you using?
+Q) Understanding Azure Policy & Its Core Components
+ 👉 Explain the difference between Azure Virtual Network, Subnet, NSG, ASG, and UDR.
+ 👉 How does Azure Active Directory differ from on-prem AD?
+ 👉 What is Azure Kubernetes Service (AKS) and how do you manage scaling & upgrades?
+ 👉 Explain Azure DevOps pipelines (CI/CD) and YAML-based automation.
+ 👉 How do you implement role-based access control (RBAC) and least privilege in Azure?
+ 👉 What is Azure Key Vault and how do you secure secrets and certificates?
+ 👉 Explain Azure Load Balancer vs Application Gateway vs Traffic Manager.
+ 👉 What is Infrastructure as Code (IaC) in Azure? Compare ARM, Bicep & Terraform.
+ 👉 How do you design high availability and geo-redundancy in Azure?
+ 👉 Explain Virtual Machine Scale Sets (VMSS) and autoscaling logic.
+ 👉 What is Azure Monitor, Log Analytics, and Application Insights?
+ 👉 How do you optimize cloud cost using Azure Cost Management?
+ 👉 Explain Azure Storage types: Blob, File, Queue, Table — and their use cases.
+ 👉 Describe Azure Backup vs Azure Site Recovery (ASR).
+ 👉 How does Azure Firewall differ from NSG? When to use which?
+ 👉 Explain VNet Peering vs VPN Gateway vs ExpressRoute.
+ 👉 What is Zero Trust architecture in Azure?
+ 👉 How do you manage identity using Azure AD Connect & Hybrid Join?
+ 👉 Explain Azure Policy, Blueprints, and governance best practices.
+ 👉 Describe your approach to migrating on-prem workloads to Azure (Lift & Shift vs Refactor).
