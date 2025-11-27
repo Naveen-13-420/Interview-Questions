@@ -2,3 +2,113 @@ Q)vWhat is “listening” in networking? Explain with a real-world scenario.
 In networking, “listening” means that a server, application, or process is waiting for incoming network connections on a specific IP address + 
 port number.When a service is “listening,” it means it has opened a port and is ready to accept requests from clients.Listening means a service has opened a port 
 and is waiting for incoming connections. For example, a web server listening on port 80 will accept HTTP requests from clients.
+
+Q) Troubleshooting VNet-to-VNet communication in different regions (Paragraph Format)
+
+When two VNets in different regions cannot communicate, the first thing I do is verify the VNet peering status on both VNets. Peering must show as Connected, 
+not “Initiated.” If one side is missing the peering, or if the wrong VNet was selected, communication will fail. Next, I check for overlapping address spaces, 
+because VNet peering does not work if both VNets share the same IP range. If necessary, I adjust the address space to avoid conflicts. After that, I review the 
+peering configuration settings, ensuring that “Allow VNet-to-VNet traffic” and “Allow forwarded traffic” are enabled, especially if a firewall or NVA sits between 
+the VNets.
+I then validate NSG rules on both subnets and NICs, because even if peering works, an NSG can block inbound or outbound traffic. I look for rules that deny ports 
+like 22, 3389, 1433, or custom application ports. To confirm, I run commands such as:
+
+Test-NetConnection <destination-ip> -Port <port>
+
+
+or on Linux:
+
+telnet <destination-ip> <port>
+curl <destination-ip>:<port>
+
+
+Next, I check route tables (UDR) attached to the subnets to ensure traffic is not being incorrectly routed to the Internet, a Firewall, or an unreachable NVA. 
+I use Effective Routes on the VM NIC to see the actual next-hop logic. If the next hop shows Internet or an unexpected NVA, this indicates a routing issue. 
+I also verify that Azure Firewall or any third-party NVA in the path allows the traffic; both inbound and outbound rules must be configured correctly, and 
+SNAT behavior may also affect communication.
+
+If applications connect using hostnames rather than IP addresses, I check DNS resolution to ensure that Private DNS Zones or custom DNS servers are resolving 
+to the correct private IPs. I test with:
+
+nslookup <hostname>
+
+
+Finally, if everything at the Azure layer looks correct, I check OS-level firewalls on the VMs — Windows Firewall or Linux iptables/ufw — because these can 
+silently block the traffic even when Azure networking allows it. After verifying all layers (Peering → Address Space → NSG → UDR → Firewall → DNS → VM OS Firewall),
+I retest connectivity using tools like Test-NetConnection, curl, or ping (ICMP).
+
+                 ┌────────────────────────────────┐
+                 │   Start: VNets cannot connect  │
+                 └────────────────────────────────┘
+                                │
+                                ▼
+           ┌─────────────────────────────────────────────┐
+           │ 1. Check VNet Peering Status (Both Sides)   │
+           │  - Is it 'Connected'?                       │
+           │  - Missing/incorrect peering?               │
+           └─────────────────────────────────────────────┘
+                                │
+                                ▼
+      ┌─────────────────────────────────────────────────────────┐
+      │ 2. Verify Address Space                                 │
+      │  - Any overlapping IP ranges?                           │
+      │  - Example: 10.0.0.0/16 vs 10.0.0.0/16 (❌ not allowed)  │
+      └─────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        ┌─────────────────────────────────────────────────────┐
+        │ 3. Validate Peering Settings                        │
+        │  - Allow VNet access = Enabled                      │
+        │  - Allow forwarded traffic = Enabled                │
+        └─────────────────────────────────────────────────────┘
+                                │
+                                ▼
+         ┌──────────────────────────────────────────────────┐
+         │ 4. Check NSGs on Subnets & NICs                 │
+         │  - Are ports blocked? (80/443/22/3389/custom)   │
+         │  - Any Deny rules above Allow rules?            │
+         └──────────────────────────────────────────────────┘
+                                │
+                                ▼
+         ┌──────────────────────────────────────────────────────┐
+         │ 5. Check Route Tables (UDR)                          │
+         │  - Wrong next hop? (Internet/NVA)                    │
+         │  - Should be 'VNet Peering' for direct traffic       │
+         │  - Verify Effective Routes on NIC                    │
+         └──────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        ┌─────────────────────────────────────────────────────────┐
+        │ 6. Azure Firewall / NVA Rules                           │
+        │  - Allow inbound/outbound?                              │
+        │  - SNAT required?                                       │
+        │  - Threat rules blocking traffic?                       │
+        └─────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        ┌─────────────────────────────────────────────────┐
+        │ 7. DNS Resolution Check                        │
+        │  - Using hostname? Check Private DNS/Custom DNS│
+        │  - nslookup <hostname>                         │
+        └─────────────────────────────────────────────────┘
+                                │
+                                ▼
+       ┌──────────────────────────────────────────────────┐
+       │ 8. OS Firewall on VMs                           │
+       │  - Windows Firewall / Linux UFW/IPTables        │
+       │  - Allow the required ports                     │
+       └──────────────────────────────────────────────────┘
+                                │
+                                ▼
+         ┌─────────────────────────────────────────────┐
+         │ 9. Connectivity Test                        │
+         │  - Test-NetConnection <IP> -Port <port>     │
+         │  - curl <IP>:<port>                         │
+         │  - telnet <IP> <port>                       │
+         └─────────────────────────────────────────────┘
+                                │
+                                ▼
+                 ┌────────────────────────────────┐
+                 │     Issue Identified & Fixed   │
+                 └────────────────────────────────┘
+
