@@ -112,3 +112,166 @@ I retest connectivity using tools like Test-NetConnection, curl, or ping (ICMP).
                  │     Issue Identified & Fixed   │
                  └────────────────────────────────┘
 
+
+Project Architecture Overview (Your Actual Experience Explained Simply)
+
+My current project follows a modern microservices-based architecture hosted entirely on Azure, with a strong focus on AKS, DevOps automation, security, monitoring, and integration services.
+
+🏗 High-Level Architecture
+1. Frontend & Global Routing Layer
+
+Azure Front Door (AFD) for global routing, caching, WAF policies, and TLS termination
+
+Routes traffic to backend Azure regions based on:
+
+Latency
+
+Path rules (API vs UI)
+
+Health probes
+
+AFD protects the system from malicious requests using custom WAF rules
+
+2. Application Hosting Layer
+
+Azure Kubernetes Service (AKS)
+
+Multiple node pools (system & user)
+
+Ingress Controller (NGINX/AGIC) for routing inside the cluster
+
+HPA for auto-scaling
+
+Pod-level security, readiness/liveness probes
+
+Helm charts for deployments
+
+Azure App Services
+
+Used for specific admin/utility tools
+
+Connected to private endpoints for secure access
+
+3. Data & Storage Layer
+
+Azure SQL Database
+
+For transactional data
+
+Private endpoint + firewall restrictions
+
+Azure Cosmos DB
+
+For semi-structured data and telemetry
+
+Azure Storage Accounts (Blob, Queue, File)
+
+Blob for media & logs
+
+Queues for async processing
+
+Files for legacy data ingestion and log archival
+
+4. Integration & Eventing Layer
+
+Azure Service Bus (Topics & Queues)
+
+Handles async communication between microservices
+
+Dead-letter queues monitored with alerts
+
+Azure Functions
+
+Event-driven background processing
+
+Connected through Service Bus triggers and Event Grid
+
+APIs
+
+API layer deployed in AKS
+
+Secured with Managed Identity and Key Vault
+
+5. Security Layer
+
+Azure Key Vault
+
+Stores secrets, certificates, and connection strings
+
+Accessed using Managed Identities (no plain-text secrets)
+
+Network Security Groups (NSGs)
+
+Protect subnets & VM access
+
+Azure Firewall & UDRs
+
+Centrally control outbound traffic
+
+Forced tunneling for restricted resources
+
+Private Endpoints
+
+For SQL, Storage, Key Vault, Service Bus—all traffic stays inside Microsoft backbone
+
+AAD Integration
+
+RBAC for pipelines, service principals, managed identities
+
+6. Monitoring & Observability Layer
+
+Azure Monitor + Log Analytics
+
+Custom KQL alerts for API failures, CPU spikes, Pod memory usage
+
+Application Insights
+
+End-to-end request tracking
+
+Distributed tracing for microservices
+
+Container Insights
+
+Node, pod, and container-level metrics
+
+Azure Alerts → Teams/Email
+
+Threshold-based alerts
+
+Query-based alerts for recurring log patterns (e.g., authentication failures)
+
+7. DevOps Layer
+
+Azure DevOps Repos
+
+Mono-repo or microservice repos
+
+Azure DevOps YAML Pipelines
+
+CI → Build + image push to ACR
+
+CD → Helm-based AKS deployments
+
+Variable groups for secrets
+
+Environment-specific approvals
+
+Terraform
+
+IaC for AKS, SQL, Service Bus, Storage, Networking
+
+Remote backend using Azure Storage + Key for locking
+
+ACR (Azure Container Registry)
+
+Stores container images
+
+Connected to AKS with managed identity
+
+🚀 Summary (Use this in interview to sound confident and structured)
+
+“Our architecture is fully built on Azure using a microservices model. We use Azure Front Door for global routing and WAF, AKS as the primary 
+compute layer with Helm-based deployments, and Azure SQL + Cosmos DB for data. We rely heavily on Service Bus for asynchronous communication and 
+use Key Vault, private endpoints, NSGs, and Azure Firewall for security. The entire estate is monitored using Azure Monitor, Log Analytics, and 
+Application Insights. All deployments are automated using Azure DevOps YAML pipelines and Terraform for infrastructure provisioning.”
+
