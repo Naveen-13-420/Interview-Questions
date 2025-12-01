@@ -1,0 +1,36 @@
+36️⃣ How do you optimize Dockerfile layer caching?
+Answer:
+
+Docker builds images layer by layer and caches each layer.
+
+To optimize caching:
+
+1. Put frequently changing instructions at the bottom
+
+Example:
+
+COPY . .   ← changes frequently → should be lower
+
+2. Put dependency install steps at the top
+COPY package*.json ./
+RUN npm install
+
+
+Then:
+
+COPY . .
+
+
+This allows Docker to reuse cached npm install layer.
+
+3. Use .dockerignore
+
+Prevents unnecessary files from breaking cache.
+
+4. Combine RUN instructions
+RUN apt-get update && apt-get install -y curl
+
+5. Avoid ADD . . with large contexts
+Interview answer (Short):
+
+Place stable steps at the top and changing steps at the bottom so Docker can reuse cached layers to speed up builds.
