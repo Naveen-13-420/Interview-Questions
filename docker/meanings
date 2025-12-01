@@ -207,3 +207,35 @@ Graceful shutdown in Kubernetes
 🧠 Interview Summary:
 
 137 = OOM Killed, 143 = stopped gracefully, 1 = error, 0 = success.
+
+
+How to integrate Docker build + push to ACR in YAML?
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  imageName: myapp
+
+steps:
+- task: Docker@2
+  inputs:
+    command: build
+    repository: $(imageName)
+    dockerfile: Dockerfile
+    tags: |
+      $(Build.BuildId)
+
+- task: Docker@2
+  inputs:
+    command: login
+    containerRegistry: myACRServiceConnection
+
+- task: Docker@2
+  inputs:
+    command: push
+    repository: $(imageName)
+    tags: |
+      $(Build.BuildId)
