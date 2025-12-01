@@ -34,3 +34,40 @@ RUN apt-get update && apt-get install -y curl
 Interview answer (Short):
 
 Place stable steps at the top and changing steps at the bottom so Docker can reuse cached layers to speed up builds.
+
+
+How do you debug a failed Docker build?
+Steps:
+1. Use verbose output
+docker build . --progress=plain
+
+2. Identify the exact layer failing
+
+Docker prints step numbers like:
+
+Step 4/8 : RUN npm install
+
+
+Fix issues in that layer.
+
+3. Use an interactive shell inside intermediate container
+docker run -it <intermediate-image-id> sh
+
+4. Check build context
+
+Run:
+
+docker build . --no-cache
+
+
+If it succeeds → caching issue.
+
+5. Validate Dockerfile syntax
+docker run --rm -i hadolint/hadolint < Dockerfile
+
+
+(Static analysis helper)
+
+⭐ Interview summary:
+
+I check which step fails, inspect intermediate containers, rebuild with no cache, and validate the Dockerfile.
