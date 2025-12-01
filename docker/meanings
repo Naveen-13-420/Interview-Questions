@@ -239,3 +239,10 @@ steps:
     repository: $(imageName)
     tags: |
       $(Build.BuildId)
+
+Combine RUN commands
+
+Reduce layers:
+
+combine commands for reduce space
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/* 
