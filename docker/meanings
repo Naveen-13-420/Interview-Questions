@@ -148,6 +148,7 @@ If app runs in background (&) → container exits.
 Using base images like alpine without a command
 
 docker run alpine
+if needs to run continuesly use CMD ["tail", "-f", "/dev/null"]
 
 
 No default command → exits.
