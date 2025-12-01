@@ -71,3 +71,89 @@ docker run --rm -i hadolint/hadolint < Dockerfile
 ⭐ Interview summary:
 
 I check which step fails, inspect intermediate containers, rebuild with no cache, and validate the Dockerfile.
+
+✅ 39️⃣ How do you troubleshoot a container not starting?
+Steps:
+1. Check logs
+docker logs <container>
+
+2. Inspect container
+docker inspect <container>
+
+3. Check exit code
+docker ps -a
+
+
+Common exit codes:
+
+1 → application error
+
+137 → killed due to OOM (memory limit)
+
+126/127 → command not found
+
+0 → container ran and exited normally
+
+4. Check ENTRYPOINT / CMD issues
+
+If ENTRYPOINT is wrong → container exits immediately.
+
+5. Run container shell manually
+docker run -it <image> sh
+
+6. Check file permissions / user issues
+7. If running in Kubernetes
+kubectl describe pod
+
+
+Look for:
+
+OOMKilled
+
+CrashLoopBackOff
+
+Permission denied errors
+
+⭐ Interview Short Answer:
+
+Check logs, inspect container, verify ENTRYPOINT/CMD, check exit codes, and run the image interactively to test.
+
+✅ 40️⃣ Why does a container exit immediately after starting?
+Reason:
+
+The container’s main process finished, so Docker stops it.
+
+Docker containers run as long as the main process (PID 1) runs.
+
+Common causes:
+
+Running commands that exit immediately
+
+docker run ubuntu echo "hello"
+
+
+Finishes → container stops.
+
+ENTRYPOINT / CMD misconfigured
+
+Wrong script path
+
+Missing file
+
+Permission denied
+
+No foreground process
+If app runs in background (&) → container exits.
+
+Using base images like alpine without a command
+
+docker run alpine
+
+
+No default command → exits.
+
+Shell script ends due to error
+
+⭐ Interview summary:
+
+Containers exit when the main process finishes. To keep them running, ensure a long-running process like a server or use tail -f /dev/null.
