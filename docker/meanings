@@ -157,3 +157,52 @@ Shell script ends due to error
 ⭐ Interview summary:
 
 Containers exit when the main process finishes. To keep them running, ensure a long-running process like a server or use tail -f /dev/null.
+
+41️⃣ What does Exit Code 137, 143, 1, and 0 mean in Docker?
+Exit Code 0
+
+✔ Success — container completed without errors.
+
+Exit Code 1
+
+❌ General application error
+Reasons:
+
+Script error
+
+File missing
+
+Wrong command
+
+Node/Java/Python app crashed
+
+Exit Code 137
+
+❗ Container was killed due to OOM (Out Of Memory)
+
+Means the kernel terminated the container
+
+Usually occurs when a container exceeds memory limit
+
+Kubernetes shows:
+
+OOMKilled
+
+
+Fix: Increase container memory or fix memory leaks.
+
+Exit Code 143
+
+⚠️ Container stopped gracefully (SIGTERM)
+
+Occurs when:
+
+You run docker stop
+
+Pod is terminated during deployment
+
+Graceful shutdown in Kubernetes
+
+🧠 Interview Summary:
+
+137 = OOM Killed, 143 = stopped gracefully, 1 = error, 0 = success.
