@@ -246,3 +246,16 @@ Reduce layers:
 
 combine commands for reduce space
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/* 
+
+
+✅ 89️⃣ Difference between Alpine and Ubuntu images.
+Feature	Alpine	Ubuntu
+Size	~5 MB	~70–120 MB
+Package Manager	apk	apt
+Speed	Very fast	Moderate
+Security	Fewer CVEs	More CVEs
+Compatibility	MUSL libc → some apps may break	GLIBC → more compatible
+Use Case	Microservices	Full OS features
+Key point:
+
+Alpine uses MUSL libc → some Python/Java/Golang apps may face issues.
