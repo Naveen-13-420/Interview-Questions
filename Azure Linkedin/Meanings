@@ -275,3 +275,12 @@ compute layer with Helm-based deployments, and Azure SQL + Cosmos DB for data. W
 use Key Vault, private endpoints, NSGs, and Azure Firewall for security. The entire estate is monitored using Azure Monitor, Log Analytics, and 
 Application Insights. All deployments are automated using Azure DevOps YAML pipelines and Terraform for infrastructure provisioning.”
 
+
+What is VPC and its use cases?
+
+A VPC (Virtual Private Cloud) is a private network created inside a cloud provider. It allows you to launch cloud resources such as virtual 
+machines in an isolated and secure network, where you control IP ranges, subnets, routing, and security rules.
+
+VPC is used to securely host applications, separate public and private resources, control inbound and outbound traffic, 
+enable private communication between services, and connect on-premises networks to the cloud using VPN or ExpressRoute.
+
