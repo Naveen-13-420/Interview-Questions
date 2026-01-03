@@ -239,3 +239,35 @@ CORS misconfiguration (browser blocking), or auth failures (401/403). If network
 from the frontend (namespace/IP) to the backend service. In short, I start at the browser (error type), then check ingress/load balancer, then 
 service/endpoints, then backend pod logs and configuration, and that step-by-step approach quickly shows whether it’s a frontend config issue, 
 routing issue, or a real backend problem.
+
+
+Explain your production-grade Kubernetes architecture.
+
+Here is a clear, interview-ready explanation of a production-grade Kubernetes (AKS) architecture, written in paragraph format, 
+exactly how you can speak it in an interview.
+
+In production, our Kubernetes architecture is designed for high availability, security, scalability, and observability. We run 
+AKS in a custom Azure VNet using Azure CNI, so pods get VNet IPs and can securely communicate with other Azure resources. The cluster 
+is deployed across multiple availability zones to avoid single points of failure. We separate workloads using multiple namespaces (for 
+example dev, test, prod, or team-based namespaces) and apply RBAC and network policies for isolation and security.
+
+For compute, we use multiple node pools: a system node pool dedicated to Kubernetes system components and one or more user node pools for 
+application workloads. User node pools are sized based on workload needs, sometimes with separate pools for CPU-intensive, memory-intensive, 
+or spot workloads. Autoscaling is enabled using HPA for pod scaling and Cluster Autoscaler for node scaling, so the platform can handle traffic 
+spikes and scale down during low usage.
+
+For traffic management, external access is handled through an Ingress Controller (NGINX or Application Gateway Ingress Controller). This provides a 
+single entry point with TLS termination, path/host-based routing, and optional WAF. Internal communication between services is done using ClusterIP 
+services. Outbound and hybrid connectivity follows VNet routing, NSGs, and UDRs, and access to Azure PaaS services like Key Vault, Storage, or SQL is 
+done through Private Endpoints to avoid public exposure.
+
+From a security perspective, we avoid hard-coded secrets and use Managed Identity or Azure Workload Identity so pods can securely access Azure services. 
+Secrets are stored in Azure Key Vault and integrated with AKS. We also use PodDisruptionBudgets, readiness/liveness probes, and proper resource requests 
+and limits to ensure stability during upgrades and failures.
+
+For observability, we enable Azure Monitor / Container Insights, centralize logs in Log Analytics, and create alerts for pod restarts, high CPU/memory, 
+node health, and ingress errors. CI/CD is handled through Azure DevOps, where pipelines build images, push to a registry, and deploy using Kubernetes 
+manifests or Helm with controlled rollouts and rollback support.
+
+In summary, a production-grade Kubernetes architecture combines multi-AZ AKS, secure networking, ingress-based traffic routing, autoscaling, strong 
+identity and RBAC, and full monitoring, ensuring the platform is secure, resilient, and easy to operate at scale.
