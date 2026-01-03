@@ -271,3 +271,30 @@ manifests or Helm with controlled rollouts and rollback support.
 
 In summary, a production-grade Kubernetes architecture combines multi-AZ AKS, secure networking, ingress-based traffic routing, autoscaling, strong 
 identity and RBAC, and full monitoring, ensuring the platform is secure, resilient, and easy to operate at scale.
+
+What happens when readiness/liveness probes fail?
+When a readiness probe fails, Kubernetes does not restart the container. Instead, it marks the pod as NotReady and immediately removes it from the 
+Service or Ingress load-balancer endpoints. This means no new traffic is sent to that pod, but the container continues running in the background. 
+Once the readiness probe starts passing again, the pod is added back to the load balancer and begins receiving traffic.
+
+When a liveness probe fails, Kubernetes assumes the application is unhealthy and restarts the container. The kubelet kills the container and starts 
+it again according to the pod’s restart policy. If the application keeps failing the liveness probe after restarting, the pod enters a CrashLoopBackOff 
+state, where Kubernetes backs off and retries restarting it with increasing delays.
+
+
+How do you implement autoscaling (HPA/VPA/Cluster Autoscaler)?
+In Kubernetes, autoscaling is implemented at three levels: pod level using HPA, resource level using VPA, and node level using Cluster Autoscaler. 
+For Horizontal Pod Autoscaler (HPA), I first ensure the Metrics Server or monitoring stack is enabled, then define CPU, memory, or custom metrics and 
+set min/max replicas in the HPA configuration. HPA continuously monitors metrics and automatically increases or decreases the number of pod replicas 
+based on load, which is the most common and production-ready autoscaling method.
+
+For Vertical Pod Autoscaler (VPA), I use it mainly to optimize resource requests and limits. VPA observes pod usage over time and recommends or 
+automatically adjusts CPU and memory values. Because VPA usually requires pod restarts when applying changes, I mostly run it in recommendation 
+mode in production and use those recommendations to fine-tune resource settings, rather than letting it automatically restart pods.
+
+At the infrastructure level, I enable Cluster Autoscaler on AKS node pools. Cluster Autoscaler automatically adds nodes when pods cannot be scheduled 
+due to insufficient CPU or memory, and removes underutilized nodes when demand decreases. This works together with HPA: HPA scales pods first, and if 
+there is not enough node capacity, Cluster Autoscaler scales the nodes.
+
+In summary, HPA handles traffic-based scaling, VPA optimizes pod resource sizing, and Cluster Autoscaler ensures enough node capacity, and together 
+they provide a fully elastic, cost-efficient, production-grade autoscaling solution in AKS.
