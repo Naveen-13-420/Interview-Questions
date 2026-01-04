@@ -298,3 +298,21 @@ there is not enough node capacity, Cluster Autoscaler scales the nodes.
 
 In summary, HPA handles traffic-based scaling, VPA optimizes pod resource sizing, and Cluster Autoscaler ensures enough node capacity, and together 
 they provide a fully elastic, cost-efficient, production-grade autoscaling solution in AKS.
+
+What happens internally when you create a Pod? (Interview Explanation)
+
+When you create a Pod (for example using kubectl apply -f pod.yaml), the request first goes to the kube-apiserver, which authenticates and 
+authorizes it using RBAC, validates the manifest, and then stores the desired state of the Pod in etcd. At this stage, the Pod exists only 
+as a record and is not yet running.
+
+Next, the kube-scheduler continuously watches the API server for unscheduled Pods. It evaluates available worker nodes based on resource 
+availability, taints and tolerations, node affinity, and other constraints, then selects the most suitable node and updates the Pod object 
+with the chosen node.
+
+Once the Pod is assigned to a node, the kubelet on that worker node detects the new Pod assignment from the API server. The kubelet then 
+communicates with the container runtime (containerd/Docker) to pull the required container images, create containers, and start them. At the 
+same time, the CNI plugin configures networking for the Pod by assigning an IP address and setting up routing.
+
+After the containers start, the kubelet reports the Pod status back to the API server. If health probes are defined, kubelet begins running 
+startup, readiness, and liveness probes. When the readiness probe succeeds, the Pod is marked Ready and added to the Service endpoints, 
+allowing it to receive traffic.
